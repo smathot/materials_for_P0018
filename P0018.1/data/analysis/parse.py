@@ -47,6 +47,7 @@ class MyReader(EyelinkAscFolderReader):
 		"""
 
 		self.trialId = trialDict['trialId']
+		trialDict['nSacc'] = 0
 
 	def finishTrial(self, trialDict):
 
@@ -70,6 +71,7 @@ class MyReader(EyelinkAscFolderReader):
 				trialDict['match'] = 0
 			else:
 				trialDict['match'] = 1
+		trialDict['subject_nr'] = trialDict['file'][2:4]
 		sys.stdout.write('.')
 		sys.stdout.flush()
 
@@ -90,6 +92,7 @@ class MyReader(EyelinkAscFolderReader):
 
 		if self.tracePhase == 'cue' and 'ESACC' in l:
 			self.tracePhase = 'sacc'
+			trialDict['nSacc'] += 1
 		trialDict['trialId'] = self.trialId
 
 @cachedDataMatrix
