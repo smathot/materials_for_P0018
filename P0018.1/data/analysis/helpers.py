@@ -17,34 +17,9 @@ You should have received a copy of the GNU General Public License
 along with P0014.1.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import sys
-import math
-from exparser import TraceKit as tk
-from exparser import Plot
-from exparser.TangoPalette import *
-from exparser.Cache import cachedDataMatrix
-from exparser.PivotMatrix import PivotMatrix
-from yamldoc import validate
-from matplotlib import pyplot as plt
-import numpy as np
-import warnings
+from analysis.constants import *
 
-traceParams = {
-	'signal'			: 'pupil',
-	'lock'				: 'start',
-	'phase'				: 'sacc',
-	'baseline'			: 'cue',
-	'baselineLock'		: 'end',
-	'baselineLen'		: 10,
-	'traceLen'			: 2500,
-	'transform'			: np.sqrt
-	}
-
-show = '--show' in sys.argv
-matchColor = green[1]
-nonMatchColor = red[1]
-yLim = .85, 1.05
-
+@cachedDataMatrix
 def _filter(dm):
 
 	"""
@@ -60,6 +35,7 @@ def _filter(dm):
 			type:	DataMatrix
 	"""
 
+	# Extract subject numbers from the filenames
 	print('Checking subject numbers ...')
 	for fname in dm.unique('file'):
 		i = int(fname[2:4])
@@ -67,83 +43,52 @@ def _filter(dm):
 		assert(_dm.count('subject_nr') == 1)
 		print('%s -> %d -> %d' % (fname, i, _dm['subject_nr'][0]))
 		assert(_dm['subject_nr'][0] == i)
-	print('Done')
-	dm = dm.select('nSacc > 0')
+	# Filter outliers
+	dm = dm.select('saccVel > 5')
+	dm = dm.select('saccLat > 0')
+	dm = dm.select('saccLat < 2000')
+	print dm.collapse(['subject_nr'], 'subject_nr')
+	print dm.collapse(['startPos'], 'subject_nr')
+	# Add regression parameters
+	dm = dm.addField('pupilIntercept', dtype=float, default=0)
+	dm = dm.addField('slopeX', dtype=float, default=0)
+	dm = dm.addField('slopeY', dtype=float, default=0)
+	for subject_nr in dm.unique('subject_nr'):		
+		l = []
+		for startPos in ['left', 'right', 'bottom', 'top']:
+			_dm = dm.select('subject_nr == %d' % subject_nr, verbose=False) \
+				.select('startPos == "%s"' % startPos, verbose=False)
+			for trialDm in _dm:
+				ps = tk.getTrace(trialDm, **baselineParams).mean()
+				x = _dm['startX'].mean()
+				y = -_dm['startY'].mean() # In PsychoPy, negative is down
+				l.append( [x, y, ps] )
+		a = np.array(l)
+		df = pd.DataFrame(a, columns=['x', 'y', 'ps'])
+		model = sm.ols('ps ~ x+y', data=df)
+		results = model.fit()
+		print 'Subject %d' % subject_nr
+		print results.params		
+		print results.params[0], results.params[1], results.params[2]
+		i = np.where(dm['subject_nr'] == subject_nr)
+		dm['pupilIntercept'][i] = results.params[0]
+		dm['slopeX'][i] = results.params[1]
+		dm['slopeY'][i] = results.params[2]
 	return dm
 
-def pupilPlot(dm, suffix='', folder=None, standalone=True):
-
+def peakVel(dm):
+	
 	"""
 	desc:
-		Creates a main pupil plot contrasting match and non-match trials.
-
+		Analyses peak velocity per startPos.
+		
 	arguments:
 		dm:
-			type:	DataMatrix
-
-	keywords:
-		suffix:
-			desc:	A filename suffix for the plot.
-			type:	str
-		folder:
-			desc:	A folder name for the plot.
-			type:	[str, NoneType]
-		standalone:
-			desc:	Indicates whether the plot is standalone or a subplot.
-			type:	bool
+			type:	DataMatrix		
 	"""
+	
+	for startPos in ['left', 'right', 'bottom', 'top']:
+		pm = PivotMatrix(dm, ['subject_nr'], ['subject_nr'],
+			dv='sf_%s' % startPos)
+		pm._print(startPos, sign=4)
 
-	dmMatch = dm.select('match == 1')
-	dmNonMatch = dm.select('match == 0')
-	if standalone:
-		Plot.new(size=Plot.r)
-		plt.title(suffix)
-	ax = plt.gca()
-	plt.axhline(1, linestyle='--', color='black')
-	plt.xlim(0, traceParams['traceLen'])
-	plt.ylim(yLim)
-	tk.plotTraceAvg(ax, dmMatch, lineColor=matchColor, label='Match',
-		**traceParams)
-	tk.plotTraceAvg(ax, dmNonMatch, lineColor=nonMatchColor, label='Non-match',
-		**traceParams)
-	plt.legend(frameon=False, loc='lower right')
-	if standalone:
-		Plot.save('pupilPlot'+suffix, folder=folder, show=show)
-
-def pupilPlotSubject(dm):
-
-	"""
-	desc:
-		Creates by-subject pupil plots.
-
-	arguments:
-		dm:
-			type:	DataMatrix
-	"""
-
-	Plot.new(size=Plot.l)
-	for i, _dm in enumerate(dm.group('subject_nr')):
-		plt.subplot(5, 2, i+1)
-		subjectNr = _dm['subject_nr'][0]
-		plt.title('Subject %d (N=%d)' % (subjectNr, len(_dm)))
-		pupilPlot(_dm, standalone=False)
-	Plot.save('pupilPlotSubject', show=show)
-
-def pupilPlotStartPos(dm):
-
-	"""
-	desc:
-		Creates by-start-pos pupil plots.
-
-	arguments:
-		dm:
-			type:	DataMatrix
-	"""
-
-	Plot.new(size=Plot.l)
-	for i, startPos in enumerate(['left', 'right', 'bottom', 'top']):
-		plt.subplot(2, 2, i+1)
-		plt.title(startPos)
-		_dm = dm.select('startPos == "%s"' % startPos)
-		pupilPlot(_dm, standalone=False)
-	Plot.save('pupilPlotStartPos', show=show)
