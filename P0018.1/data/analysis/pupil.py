@@ -19,7 +19,7 @@ along with P0014.1.  If not, see <http://www.gnu.org/licenses/>.
 
 from analysis.constants import *
  
-def pupilPlot(dm, suffix='', folder='pupil', standalone=True):
+def pupilPlot(dm, suffix='', folder='pupil', model=None, standalone=True):
 
 	"""
 	desc:
@@ -49,11 +49,11 @@ def pupilPlot(dm, suffix='', folder='pupil', standalone=True):
 	ax = plt.gca()
 	plt.axhline(1, linestyle='--', color='black')
 	plt.xlim(0, traceParams['traceLen'])
-	#plt.ylim(yLim)
-	tk.plotTraceAvg(ax, dmMatch, lineColor=matchColor, label='Match',
-		**traceParams)
-	tk.plotTraceAvg(ax, dmNonMatch, lineColor=nonMatchColor, label='Non-match',
-		**traceParams)	
+	_dm = dm.selectColumns(['match', 'saccDir', 'subject_nr', '__trace_sacc__',
+		'slopeX', 'slopeY'])
+	tk.plotTraceContrast(_dm, 'match == 1', 'match == 0', label1='Match',
+		label2='Non-match', model=model,
+		winSize=winSize, cacheId='.lmerPupil'+suffix, **traceParams)
 	plt.axvline(lookback, color='black', linestyle=':')	
 	plt.legend(frameon=False, loc='lower right')
 	if standalone:

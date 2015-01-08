@@ -24,5 +24,6 @@ Tools.analysisLoop(
 	parse.getDataMatrix(cacheId='data'),
 	mods=[helpers, pupil, saccade],
 	pre=['_filter'],
-	full=['pupilPlot', 'pupilPlotSubject', 'pupilPlotStartPos'],
+	full=['pupilPlot', 'pupilPlotSubject', 'pupilPlotStartPos',
+	   'saccadePlotStartPos', 'saccadeMetrics'],
 	)

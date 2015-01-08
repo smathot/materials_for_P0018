@@ -39,6 +39,7 @@ traceLen = 1500
 
 def regressFunc(a, dm):
 	
+	#print('%.4f, %.4f' % (dm['slopeX'][0],  dm['slopeY'][0]))
 	return a[:,2] - a[:,0]*dm['slopeX'][0] - a[:,1]*dm['slopeY'][0]
 
 traceParams = {
@@ -48,7 +49,7 @@ traceParams = {
 	'baseline'			: 'sacc',
 	'baselineLock'		: 'start',
 	'baselineLen'		: 10,
-	'baselineOffset'	: 295,
+	'baselineOffset'	: 195,
 	'traceLen'			: traceLen,
 	'regress'			: regressFunc,
 	}
@@ -72,12 +73,13 @@ horizParams = {
 vertParams = horizParams.copy()
 vertParams['signal'] = 'y'
 
-
+saccVelRange = 5, 15
 show = '--show' in sys.argv
 matchColor = green[1]
 nonMatchColor = red[1]
 yLim = .8, 1.05
 lookback = 300
+winSize = 50
 # Display center
 xc = 512
 yc = 384
