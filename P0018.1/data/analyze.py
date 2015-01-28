@@ -19,11 +19,11 @@ along with P0014.1.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from exparser import Tools
-from analysis import helpers, parse, pupil, saccade
+from analysis import helpers, parse, pupil, saccade, ratings, optimal
 Tools.analysisLoop(
 	parse.getDataMatrix(cacheId='data'),
-	mods=[helpers, pupil, saccade],
+	mods=[helpers, pupil, saccade, ratings, optimal],
 	pre=['_filter'],
-	full=['pupilPlot', 'pupilPlotSubject', 'pupilPlotStartPos',
-	   'saccadePlotStartPos', 'saccadeMetrics'],
+	full=['mainPupilPlot', 'plotOptimal', 'directionPlot',
+		'saccadeVelPlotStartPos', 'ratingPlot'],
 	)

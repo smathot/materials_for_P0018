@@ -55,7 +55,7 @@ class MyReader(EyelinkAscFolderReader):
 		self.checkFix = 0
 		trialDict['saccLat'] = None
 		trialDict['saccVel'] = 0
-		self._sample = None		
+		self._sample = None
 		self.inSacc = False
 		self.cueTime = None
 		self.saccTime = None
@@ -86,7 +86,7 @@ class MyReader(EyelinkAscFolderReader):
 				trialDict['match'] = 0
 			else:
 				trialDict['match'] = 1
-		trialDict['subject_nr'] = trialDict['file'][2:4]		
+		trialDict['subject_nr'] = trialDict['file'][2:4]
 		if 'sacc' in self.traceDict and len(self.traceDict['sacc']) > 0:
 			trialDict['hasSaccTrace'] = 1
 		else:
@@ -98,7 +98,7 @@ class MyReader(EyelinkAscFolderReader):
 		trialDict['saccVel'] = np.mean(self.saccVel)
 		trialDict['saccLat'] = self.saccTime - self.cueTime
 		print trialDict['saccLat'], self.startPos
-				
+
 	def parseStartTracePhase(self, l):
 
 		"""
@@ -112,7 +112,7 @@ class MyReader(EyelinkAscFolderReader):
 		if 'baseline' in l:
 			self.tracePhase = 'baseline'
 			self.baselineTime = l[1]
-	
+
 	def parseLine(self, trialDict, l):
 
 		"""
@@ -127,14 +127,14 @@ class MyReader(EyelinkAscFolderReader):
 				desc:	A white-space-splitted line.
 				type:	list
 		"""
-		
+
 		if self.inSacc:
 			self.tracePhase = 'sacc'
 
 		trialDict['trialId'] = self.trialId
 		if 'phase' in l and 'cue' in l:
 			self.cueTime = l[1]
-			
+
 		# Keep track of sample to sample velocity
 		s = self.toSample(l)
 		if s != None:
@@ -142,7 +142,7 @@ class MyReader(EyelinkAscFolderReader):
 				self.vel = np.sqrt((self._sample['x']-s['x'])**2 \
 					+ (self._sample['y']-s['y'])**2)
 			self._sample = s
-			
+
 		# Detect saccades
 		if s != None and self.baselineTime != None \
 			and s['time'] - self.baselineTime > 100 and not self.inBlink \
@@ -160,7 +160,7 @@ class MyReader(EyelinkAscFolderReader):
 			if saccStart:
 				if self.n < self.minN:
 					self.n += 1
-				else:					
+				else:
 					self.inSacc = True
 					self.traceDict['sacc'] = \
 						self.traceDict['baseline'][-lookback:]
@@ -177,7 +177,7 @@ class MyReader(EyelinkAscFolderReader):
 					self.saccVel.append(self.vel)
 					self.saccTime = s['time']
 					self.tracePhase = 'sacc'
-					
+
 		# Detect saccade errors
 		if not self.inBlink and self.inSacc \
 			and len(self.traceDict['sacc']) > 50:
@@ -203,7 +203,7 @@ def getDryRun():
 
 @cachedDataMatrix
 def getDataMatrix():
-	
+
 	global dryrun
 	dryrun = getDryRun(cacheId='dryrun')
 	return MyReader(blinkReconstruct=True, maxN=maxN,

@@ -18,8 +18,9 @@ along with P0014.1.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from analysis.constants import *
- 
-def pupilPlot(dm, suffix='', folder='pupil', model=None, standalone=True):
+
+def pupilPlot(dm, suffix='', folder='pupil', model=None, standalone=True,
+	setYLim=True):
 
 	"""
 	desc:
@@ -36,67 +37,48 @@ def pupilPlot(dm, suffix='', folder='pupil', model=None, standalone=True):
 		folder:
 			desc:	A folder name for the plot.
 			type:	[str, NoneType]
+		model:
+			desc:	The statistical model to be used or `None` for no
+					statistics.
+			type:	[str, NoneType]
 		standalone:
 			desc:	Indicates whether the plot is standalone or a subplot.
 			type:	bool
+		setYLim:
+			desc:	Indicates whether the Y limit should be fixed (True) or set
+					automatically by pyplot (False).
+			type:	bool
 	"""
 
-	dmMatch = dm.select('match == 1')
-	dmNonMatch = dm.select('match == 0')
 	if standalone:
-		Plot.new(size=Plot.r)
 		plt.title(suffix)
-	ax = plt.gca()
-	plt.axhline(1, linestyle='--', color='black')
+		Plot.new(rectPlot)
 	plt.xlim(0, traceParams['traceLen'])
-	_dm = dm.selectColumns(['match', 'saccDir', 'subject_nr', '__trace_sacc__',
-		'slopeX', 'slopeY'])
-	tk.plotTraceContrast(_dm, 'match == 1', 'match == 0', label1='Match',
-		label2='Non-match', model=model,
+	cols = ['match', 'saccDir', 'subject_nr', '__trace_sacc__', 'slopeX',
+		'slopeY', '_peakVel']
+	if 'errVel' in dm.columns():
+		cols += ['errVel', 'errVelPerc']
+	if 'orthoVel' in dm.columns():
+		cols += ['orthoVel']
+	_dm = dm.selectColumns(cols)
+	plt.axvline(lookback, color='black', linestyle=':')
+	plt.axhline(1, color='black', linestyle=':')
+	tk.plotTraceContrast(_dm, 'match == 1', 'match == 0', model=model,
+		label1='Intrasaccadic Percept (N=%d)' % len(_dm.select('match == 1')),
+		label2='No Percept (N=%d)' % len(_dm.select('match == 0')),
 		winSize=winSize, cacheId='.lmerPupil'+suffix, **traceParams)
-	plt.axvline(lookback, color='black', linestyle=':')	
-	plt.legend(frameon=False, loc='lower right')
+	plt.legend(frameon=False, loc='upper right')
+	plt.xlim(0, traceParams['traceLen'])
+	plt.xticks(range(100, traceParams['traceLen'], 200),
+		range(100-lookback, traceParams['traceLen']-lookback, 200))
+	if setYLim:
+		plt.ylim(pupilRange)
+	plt.ylabel('Pupil size (normalized)')
+	plt.xlabel('Time relative to mid-saccade point (ms)')
 	if standalone:
 		Plot.save('pupilPlot'+suffix, folder=folder, show=show)
 
-def pupilPlotSubject(dm):
+def mainPupilPlot(dm):
 
-	"""
-	desc:
-		Creates by-subject pupil plots.
-
-	arguments:
-		dm:
-			type:	DataMatrix
-	"""
-
-	Plot.new(size=Plot.l)
-	for i, _dm in enumerate(dm.group('subject_nr')):
-		plt.subplot(5, 2, i+1)
-		subjectNr = _dm['subject_nr'][0]
-		plt.title('Subject %d (N=%d)' % (subjectNr, len(_dm)))
-		pupilPlot(_dm, standalone=False)
-	Plot.save('pupilPlotSubject', show=show, folder='pupil')
-
-def pupilPlotStartPos(dm):
-
-	"""
-	desc:
-		Creates by-start-pos pupil plots.
-
-	arguments:
-		dm:
-			type:	DataMatrix
-	"""
-
-	Plot.new(size=Plot.l)
-	for i, startPos in enumerate(['left', 'right', 'bottom', 'top']):
-		plt.subplot(2, 2, i+1)
-		plt.title(startPos)
-		_dm = dm.select('startPos == "%s"' % startPos)
-		if startPos in ['left', 'right']:
-			posParams = horizParams
-		else:
-			posParams = vertParams
-		pupilPlot(_dm, standalone=False)
-	Plot.save('pupilPlotStartPos', folder='pupil', show=show)
+	model = 'match*saccDir + (1+match+saccDir|subject_nr)'
+	pupilPlot(dm, suffix='.full', model=model)

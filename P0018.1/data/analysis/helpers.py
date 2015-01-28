@@ -51,9 +51,6 @@ def _filter(dm):
 	dm = dm.select('saccLat < 2000')
 	print dm.collapse(['subject_nr'], 'subject_nr')
 	print dm.collapse(['startPos'], 'subject_nr')
-	# Recode coordinates from PsychoPy reference
-	dm['startX'] = xc + dm['startX']
-	dm['startY'] = yc + dm['startY']
 	# Fix miscoding of bottom/ top
 	iBottom = np.where(dm['startPos'] == 'bottom')
 	iTop = np.where(dm['startPos'] == 'top')
@@ -61,6 +58,7 @@ def _filter(dm):
 	dm['startPos'][iTop] = 'bottom'
 	# Filter trials with fixation errors
 	dm = dm.addField('fixErr', dtype=float)
+	dm = dm.addField('saccErr', dtype=float)
 	for i in dm.range():
 		if dm[i]['startPos'] in ['left', 'right']:
 			_traceParams = horizParams
@@ -69,9 +67,12 @@ def _filter(dm):
 			_traceParams = vertParams
 			ref = dm[i]['startY']
 		a = tk.getTrace(dm[i], **_traceParams)
-		d = np.abs(a[:200]-ref).mean()
-		dm['fixErr'][i] = d
+		fixErr = np.abs(a[:200]-ref).max()
+		saccErr = np.abs(a[lookback+100:]+ref).max()
+		dm['fixErr'][i] = fixErr
+		dm['saccErr'][i] = saccErr
 	dm = dm.select('fixErr < 100')
+	dm = dm.select('saccErr < 100')
 	# Add regression parameters
 	dm = dm.addField('pupilIntercept', dtype=float, default=0)
 	dm = dm.addField('slopeX', dtype=float, default=0)
@@ -100,35 +101,75 @@ def _filter(dm):
 		dm['pupilIntercept'][i] = results.params[0]
 		dm['slopeX'][i] = results.params[1]
 		dm['slopeY'][i] = results.params[2]
-
+	# Add peak velocity estimation
+	dm = dm.addField('_peakVel', dtype=float)
+	for i in dm.range():
+		if dm['startPos'][i] in ['left', 'right']:
+			posParams = horizParams
+		else:
+			posParams = vertParams
+		a = tk.getTrace(dm[i], **posParams)[lookback-50:lookback+50]
+		v = np.abs(a[1:]-a[:-1])
+		peakVel = np.nanmax(v)
+		dm['_peakVel'][i] = peakVel * (1000./pxPerDeg)
+	dm = dm.select('_peakVel < 1000')
+	dm = dm.removeNan('_peakVel')
 	return dm
 
-def peakVel(dm):
-	
+def directionPlot(dm):
+
 	"""
 	desc:
-		Analyses peak velocity per startPos.
-		
+		Creates a multipanel plot that shows the pupil trace, saccade profile,
+		and saccade-velocity profile for each starting position.
+
 	arguments:
 		dm:
-			type:	DataMatrix		
+			type:	DataMatrix
 	"""
-	
-	print dm['saccVel']
-	plt.hist(dm['saccVel'], bins=100)
-	plt.show()
 
-	for startPos in ['left', 'right', 'bottom', 'top']:
-		pm = PivotMatrix(dm, ['subject_nr'], ['subject_nr'],
-			dv='sf_%s' % startPos)
-		pm._print(startPos, sign=4)
-
+	Plot.new(size=Plot.xl)
+	for i, startPos in enumerate(startPositions):
+		_dm = dm.select('startPos == "%s"' % startPos)
+		plt.subplot2grid((4, 4), (i, 0), colspan=2)
+		model = 'match + (1+match|subject_nr)'
+		pupil.pupilPlot(_dm, standalone=False, suffix='.'+startPos, model=model,
+			setYLim=False)
+		plt.title('startPos = %s, N = %d' % (startPos, len(_dm)))
+		plt.subplot2grid((4, 4), (i, 2))
+		if startPos in ['left', 'right']:
+			posParams = horizParams
+		else:
+			posParams = vertParams
+		plt.ylim(-384, 384)
+		plt.axhline(288, color='black', linestyle=':')
+		plt.axhline(-288, color='black', linestyle=':')
+		saccade.saccadePlot(_dm, posParams, standalone=False)
+		y = np.linspace(-340, 340, 5)
+		plt.yticks(y, y/pxPerDeg)
+		plt.xlabel('Time (ms)')
+		plt.ylabel('Eye position (o)')
+		plt.subplot2grid((4, 4), (i, 3))
+		if startPos in ['left', 'right']:
+			posParams = horizVelParams
+		else:
+			posParams = vertVelParams
+		saccade.saccadePlot(_dm, posParams, standalone=False,
+			colorRange=(200, 600))
+		plt.xlabel('Time (ms)')
+		plt.ylabel('Velocity (o/s)')
+		plt.ylim(0, 700)
+	Plot.save('directionPlot', folder='full', show=show)
 
 def fullPlot(dm, stats=True, suffix=''):
 
 	"""
 	desc:
 		Creates a fully detailed multipanel plot.
+
+	arguments:
+		dm:
+			type:	DataMatrix
 
 	keywords:
 		stats:
@@ -140,16 +181,16 @@ def fullPlot(dm, stats=True, suffix=''):
 	"""
 
 	Plot.new(size=Plot.xl)
-	ax = plt.subplot2grid((6, 2), (0, 0), colspan=2, rowspan=2)
+	plt.subplot2grid((6, 2), (0, 0), colspan=2, rowspan=2)
 	if stats:
-		model = model='match*saccDir + (1+match+saccDir|subject_nr)'
+		model = 'match*saccDir + (1+match+saccDir|subject_nr)'
 	else:
 		model = None
 	pupil.pupilPlot(dm, standalone=False, suffix=suffix+'.full', model=model)
 	plt.title('N = %d' % len(dm))
 	for i, startPos in enumerate(('left', 'right', 'bottom', 'top')):
 		_dm = dm.select('startPos == "%s"' % startPos)
-		ax = plt.subplot2grid((6, 2), (2+i, 0))
+		plt.subplot2grid((6, 2), (2+i, 0))
 		if stats:
 			model = model='match + (1+match|subject_nr)'
 		else:
@@ -157,13 +198,12 @@ def fullPlot(dm, stats=True, suffix=''):
 		pupil.pupilPlot(_dm, standalone=False, suffix=suffix+'.'+startPos,
 			model=model)
 		plt.title('startPos = %s, N = %d' % (startPos, len(_dm)))
-		ax = plt.subplot2grid((6, 2), (2+i, 1))
+		plt.subplot2grid((6, 2), (2+i, 1))
 		if startPos in ['left', 'right']:
 			posParams = horizParams
-			plt.ylim(128, 896)
 		else:
 			posParams = vertParams
-			plt.ylim(0, 768)
+		plt.ylim(-384, 384)
 		saccade.saccadePlot(_dm, posParams, standalone=False)
 	Plot.save('fullPlot'+suffix, folder='full')
 
@@ -172,6 +212,10 @@ def fullPlotSubject(dm):
 	"""
 	desc:
 		Creates a full plot for each subject.
+
+	arguments:
+		dm:
+			type:	DataMatrix
 	"""
 
 	for _dm in dm.group('subject_nr'):

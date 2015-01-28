@@ -25,22 +25,41 @@ from exparser.TangoPalette import *
 from exparser.Cache import cachedDataMatrix
 from exparser.PivotMatrix import PivotMatrix
 from exparser.EyelinkAscFolderReader import EyelinkAscFolderReader
+from exparser.CsvReader import CsvReader
 from yamldoc import validate
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from scipy.stats import nanmedian
-import pandas as pd	
+import pandas as pd
 import statsmodels.formula.api as sm
 import warnings
+from matplotlib import colors
+import matplotlib.cm as cmx
 
-smoothParams = None #{'windowLen' : 21}
+show = '--show' in sys.argv
+smoothParams = {'windowLen' : 11}
 traceLen = 1500
+pxPerDeg = 34
+frameDur = 1000./150
+saccVelRange = 200, 600
+matchColor = green[1]
+nonMatchColor = red[1]
+pupilRange = .84, 1.08
+lookback = 300
+winSize = 1
+# Display center
+xc = 512
+yc = 384
+maxN = None
+startPositions = 'left', 'right', 'top', 'bottom'
+saccadeDirections = 'right', 'left', 'down', 'up'
 
-def regressFunc(a, dm):
-	
-	#print('%.4f, %.4f' % (dm['slopeX'][0],  dm['slopeY'][0]))
-	return a[:,2] - a[:,0]*dm['slopeX'][0] - a[:,1]*dm['slopeY'][0]
+tilePlot = 4, 4
+rectPlot = 8, 4
+widePlot = 12, 4
+mainPlot = 12, 6
+highPlot = 12, 12
 
 traceParams = {
 	'signal'			: 'pupil',
@@ -51,7 +70,6 @@ traceParams = {
 	'baselineLen'		: 10,
 	'baselineOffset'	: 195,
 	'traceLen'			: traceLen,
-	'regress'			: regressFunc,
 	}
 
 baselineParams = {
@@ -65,22 +83,19 @@ horizParams = {
 	'signal'			: 'x',
 	'lock'				: 'start',
 	'phase'				: 'sacc',
-	'traceLen'			: traceLen,
-	'deriv'				: 0,
+	'offset'			: 200,
+	'traceLen'			: 400,
 	'smoothParams'		: smoothParams,
+	'transform'			: lambda x: x-xc,
 	}
 
 vertParams = horizParams.copy()
 vertParams['signal'] = 'y'
+vertParams['transform'] = lambda y: y-yc
 
-saccVelRange = 5, 15
-show = '--show' in sys.argv
-matchColor = green[1]
-nonMatchColor = red[1]
-yLim = .8, 1.05
-lookback = 300
-winSize = 50
-# Display center
-xc = 512
-yc = 384
-maxN = None
+horizVelParams = horizParams.copy()
+horizVelParams['deriv'] = 1
+horizVelParams['transform'] = lambda x: np.abs((x*1000.)/pxPerDeg)
+
+vertVelParams = horizVelParams.copy()
+vertVelParams['signal'] = 'y'
