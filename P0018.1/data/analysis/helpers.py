@@ -128,6 +128,45 @@ def directionPlot(dm):
 			type:	DataMatrix
 	"""
 
+	for i, startPos in enumerate(startPositions):
+		_dm = dm.select('startPos == "%s"' % startPos)
+		# Position
+		if startPos in ['left', 'right']:
+			posParams = horizParams
+		else:
+			posParams = vertParams
+		Plot.new(size=tilePlot)
+		saccade.saccadePlot(_dm, posParams, standalone=False, trials=True,
+			avg=False, vLine=False)
+		plt.xticks([])
+		plt.yticks([])
+		plt.ylim(-384, 384)
+		Plot.save('trialBitmap.%s.position' % startPos, folder='bitmaps')
+		# Velocity
+		if startPos in ['left', 'right']:
+			posParams = horizVelParams
+		else:
+			posParams = vertVelParams
+		Plot.new(size=tilePlot)
+		saccade.saccadePlot(_dm, posParams, standalone=False, trials=True,
+			avg=False, vLine=False)
+		plt.xticks([])
+		plt.yticks([])
+		plt.ylim(0, 700)
+		Plot.save('trialBitmap.%s.vel' % startPos, folder='bitmaps')
+		# Orthogonal velocity
+		if startPos in ['left', 'right']:
+			posParams = vertVelParams
+		else:
+			posParams = horizVelParams
+		Plot.new(size=tilePlot)
+		saccade.saccadePlot(_dm, posParams, standalone=False, trials=True,
+			avg=False, vLine=False, colorRange=(0,150))
+		plt.xticks([])
+		plt.yticks([])
+		plt.ylim(0, 200)
+		Plot.save('trialBitmap.%s.orthoVel' % startPos, folder='bitmaps')
+
 	Plot.new(size=Plot.xl)
 	for i, startPos in enumerate(startPositions):
 		_dm = dm.select('startPos == "%s"' % startPos)
@@ -144,7 +183,7 @@ def directionPlot(dm):
 		plt.ylim(-384, 384)
 		plt.axhline(288, color='black', linestyle=':')
 		plt.axhline(-288, color='black', linestyle=':')
-		saccade.saccadePlot(_dm, posParams, standalone=False)
+		saccade.saccadePlot(_dm, posParams, standalone=False, trials=False)
 		y = np.linspace(-340, 340, 5)
 		plt.yticks(y, y/pxPerDeg)
 		plt.xlabel('Time (ms)')
@@ -155,7 +194,7 @@ def directionPlot(dm):
 		else:
 			posParams = vertVelParams
 		saccade.saccadePlot(_dm, posParams, standalone=False,
-			colorRange=(200, 600))
+			colorRange=(200, 600), trials=False)
 		plt.xlabel('Time (ms)')
 		plt.ylabel('Velocity (o/s)')
 		plt.ylim(0, 700)

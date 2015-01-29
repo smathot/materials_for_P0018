@@ -55,7 +55,7 @@ def ratingPlot(dm):
 		plt.bar(x-.4, r, edgecolor=blue[2], color='white')
 		plt.errorbar(x, r, se, color=blue[2], capsize=0)
 	plt.xlim(-1, 4)
-	plt.ylim(1, 6)
+	plt.ylim(.5, 5.5)
 	plt.xticks(range(0,4), saccadeDirections)
 	plt.yticks(range(1,6))
 	plt.xlabel('Saccade direction')

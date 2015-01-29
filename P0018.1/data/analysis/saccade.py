@@ -21,7 +21,7 @@ from analysis.constants import *
 from analysis import pupil
 
 def saccadePlot(dm, posParams, suffix='', folder=None, standalone=True,
-	avg=True, colorRange=saccVelRange):
+	avg=True, colorRange=saccVelRange, trials=False, vLine=True):
 
 	"""
 	desc:
@@ -68,11 +68,13 @@ def saccadePlot(dm, posParams, suffix='', folder=None, standalone=True,
 		else:
 			pv = trialDm['_peakVel'][0]
 		color = scalarMap.to_rgba(pv)
-		plt.plot(a, color=color, alpha=.05)
+		if trials:
+			plt.plot(a, color=color, alpha=.05)
 	if avg:
 		x, y, err = tk.getTraceAvg(dm, **posParams)
 		plt.plot(y, color='black')
-	plt.axvline(lookback-posParams['offset'], color='black', linestyle=':')
+	if vLine:
+		plt.axvline(lookback-posParams['offset'], color='black', linestyle=':')
 	if standalone:
 		Plot.save('saccadePlot'+suffix, folder=folder, show=show)
 
@@ -126,7 +128,8 @@ def saccadeVelPlotStartPos(dm):
 			posParams = vertVelParams
 		else:
 			posParams = horizVelParams
-		saccadePlot(_dm, posParams, standalone=False, colorRange=(0, 150))
+		saccadePlot(_dm, posParams, standalone=False, colorRange=(0, 150),
+			trials=False)
 		plt.ylim(0, 200)
 		if i != 0:
 			plt.gca().yaxis.set_ticklabels([])
