@@ -201,7 +201,7 @@ def peakVelCorr(dm):
 			symbol = symbols.pop()
 			__dm = _dm.select('startPos == "%s"' % startPos)
 			sf = .5/nanmean(__dm['sf_%s' % startPos])
-			sv = nanmean(__dm['peakVel'])
+			sv = nanmean(__dm['_peakVel'])
 			plt.plot(sf, sv, symbol, color=color)
 			l.append([__dm['subject_nr'][0], startPos, sf, sv])
 	dm = DataMatrix(l)
@@ -242,3 +242,24 @@ def curvature(dm):
 		plt.xlim(-350, 350)
 		plt.ylim(-350, 350)
 	Plot.save('curvature', folder='saccade')
+
+def orthoVelLme(dm):
+
+	from scipy.stats import ttest_rel
+	dm = dm.addField('peakOrthoVel', dtype=float)
+	for i in dm.range():
+		if dm['saccDir'][i] == 'vert':
+			posParams = horizVelParams
+		else:
+			posParams = vertVelParams
+		a = tk.getTrace(dm[i], **posParams)
+		pv = np.max(a)
+		dm['peakOrthoVel'][i] = pv
+	cm = dm.collapse(['saccDir', 'subject_nr'], 'peakOrthoVel')
+	cm.save('output/peakOrthoVel.saccDir.csv')
+	g1 = cm['std'][10:]
+	g2 = cm['std'][:10]
+	print('M = %.4f, SD = %.4f' % (g1.mean(), g1.std()))
+	print('M = %.4f, SD = %.4f' % (g2.mean(), g2.std()))
+	t, p = ttest_rel(g1, g2)
+	print t, p

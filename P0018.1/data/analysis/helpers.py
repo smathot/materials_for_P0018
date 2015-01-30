@@ -61,14 +61,17 @@ def _filter(dm):
 	dm = dm.addField('saccErr', dtype=float)
 	for i in dm.range():
 		if dm[i]['startPos'] in ['left', 'right']:
-			_traceParams = horizParams
+			_traceParams = horizFilterParams
 			ref = dm[i]['startX']
 		else:
-			_traceParams = vertParams
+			_traceParams = vertFilterParams
 			ref = dm[i]['startY']
 		a = tk.getTrace(dm[i], **_traceParams)
 		fixErr = np.abs(a[:200]-ref).max()
 		saccErr = np.abs(a[lookback+100:]+ref).max()
+		# print ref, fixErr, saccErr
+		# plt.plot(a)
+		# plt.show()
 		dm['fixErr'][i] = fixErr
 		dm['saccErr'][i] = saccErr
 	dm = dm.select('fixErr < 100')
@@ -105,9 +108,9 @@ def _filter(dm):
 	dm = dm.addField('_peakVel', dtype=float)
 	for i in dm.range():
 		if dm['startPos'][i] in ['left', 'right']:
-			posParams = horizParams
+			posParams = horizFilterParams
 		else:
-			posParams = vertParams
+			posParams = vertFilterParams
 		a = tk.getTrace(dm[i], **posParams)[lookback-50:lookback+50]
 		v = np.abs(a[1:]-a[:-1])
 		peakVel = np.nanmax(v)
@@ -260,3 +263,17 @@ def fullPlotSubject(dm):
 	for _dm in dm.group('subject_nr'):
 		print(_dm['subject_nr'][0])
 		fullPlot(_dm, suffix='.%d' % _dm['subject_nr'][0], stats=False)
+
+def descriptives(dm):
+
+	from scipy.stats import ttest_rel
+	cm = dm.collapse(['saccDir', 'subject_nr'], '_peakVel')
+	cm.save('output/peakVel.saccDir.csv')
+	g1 = cm['std'][10:]
+	g2 = cm['std'][:10]
+	print('M = %.4f, SD = %.4f' % (g1.mean(), g1.std()))
+	print('M = %.4f, SD = %.4f' % (g2.mean(), g2.std()))
+	t, p = ttest_rel(g1, g2)
+	print t, p
+	cm = dm.collapse(['startPos', 'subject_nr'], '_peakVel')
+	cm.save('output/peakVel.startPos.csv')

@@ -79,6 +79,18 @@ baselineParams = {
 	'traceLen'			: 100,
 	}
 
+horizFilterParams = {
+	'signal'			: 'x',
+	'lock'				: 'start',
+	'phase'				: 'sacc',
+	'traceLen'			: traceLen,
+	'smoothParams'		: {'windowLen' : 11},
+	'transform'			: lambda x: x-xc,
+	}
+vertFilterParams = horizFilterParams.copy()
+vertFilterParams['signal'] = 'y'
+vertFilterParams['transform'] = lambda y: y-yc
+
 horizParams = {
 	'signal'			: 'x',
 	'lock'				: 'start',
