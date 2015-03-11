@@ -1,6 +1,6 @@
 ---
 title:
-  "Odd Sight Out: Intrasaccadic Perception Triggers Pupillary Constriction"
+  "Intrasaccadic Perception Triggers Pupillary Constriction"
 author:
   Sebastiaan Mathôt, Jean-Baptiste Melmi, and Eric Castet
 affiliation:
@@ -22,7 +22,7 @@ Keywords: pupillometry, eye movements, saccadic suppression
 
 ~
 
-# Odd Sight Out: Intrasaccadic Perception Triggers Pupillary Constriction
+# Intrasaccadic Perception Triggers Pupillary Constriction
 
 %-- include: "md/introduction.md" --%
 
@@ -46,7 +46,7 @@ Keywords: pupillometry, eye movements, saccadic suppression
 
 # Author contributions
 
-All authors contributed to the study design and contributed to writing of the manuscript. SM developed the experiment and analyzed the data. JBM collected the data.
+All authors contributed to the study design and writing of the manuscript. SM developed the experiment and analyzed the data. JBM collected the data.
 
 # Acknowledgements
 
