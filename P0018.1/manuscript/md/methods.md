@@ -1,6 +1,6 @@
 ## Materials and availability
 
-Participant data, the experimental script, and analysis scripts are available from <http://to.do/>. On-line material also includes easy-to-use demonstration software that allows anyone with a sufficiently fast display to experience intrasaccadic perception.
+Participant data, the experimental script, and analysis scripts are available from <http://to.do/>. On-line materials include easy-to-use demonstration software that allows anyone with a sufficiently fast display to experience intrasaccadic perception.
 
 ## Participants
 
@@ -19,16 +19,24 @@ figure:
  id: FigMethods
  source: FigMethods.svg
  caption: |
-  a) Participants initially fixated on a dot presented at the left, right, top, or bottom of the screen. A saccade target was presented at the location opposite from the fixation dot. An auditory cue instructed participants to make a saccadic eye movement to the saccade target. b) During Part 2 of the experiment (see main text), the background consisted of a sinusoid grating that reversed polarity on every frame.
+  Participants initially fixated on a dot presented at the left, right, top, or bottom of the screen. A saccade target was presented at the location opposite from the fixation dot. An auditory cue instructed participants to make a saccadic eye movement to the saccade target.
 --%
 
 ## Part 1: Peak saccade velocity
 
-In the first part of the experiment, we determined the mean peak velocity of saccades for each direction (left, right, down, up) and participant. The background was static and uniformly gray (++TODO cd/m^2^++). Gaze position was sampled on every frame (i.e. every 6.67 ms). Blinks were treated as missing data. On every trial, the maximum of the peaks of the horizontal or vertical velocity profiles for the entire trial was taken as the peak-saccade velocity. That is, peak velocity was the highest speed of the eyes at any moment and in any direction. When peak saccade velocity was unrealistic [above 664°/s or below 220°/s, based on a peak velocity of around 400°/s for 17° saccades, see @Baloh1975], the trial was discarded and repeated at a random moment during the remainder of the session. For every saccade direction, peak saccade velocity was based on the median of 40 trials.
+In the first part of the experiment, we determined the median peak velocity of saccades for each direction (left, right, down, up) and participant. The background was static and uniformly gray (++TODO cd/m^2^++). Gaze position was sampled on every frame (i.e. every 6.67 ms). Blinks were treated as missing data. On every trial, the maximum of the peaks of the horizontal or vertical velocity profiles for the entire trial was taken as the peak saccade velocity. That is, peak velocity was the highest speed of the eyes at any moment and in any direction. When peak saccade velocity was unrealistic [above 664°/s or below 220°/s, based on a peak velocity of around 400°/s for 17° saccades, see @Baloh1975], the trial was discarded and repeated at a random moment during the remainder of the session. For every saccade direction, peak saccade velocity was based on the median of 40 trials.
 
 ## Part 2: Intrasaccadic perception
 
-In the second part of the experiment, we investigated the effect of intrasaccadic perception on pupil size. The background was a 22.6° x 22.6° full-contrast sinusoid (++TODO cd/m^2^++ to ++TODO cd/m^2^++) grating that reversed in polarity on every frame (%FigMethods::b). During fixation, the background appeared more-or-less static, because the frame rate (150 Hz) exceeded the flicker fusion threshold (see %FigFusion::a). Furthermore, the display appeared uniformly gray, because the monitor was gamma calibrated: Two consecutive 50% luminance frames had the same average brightness as a 0% followed by a 100% luminance frame. The spatial frequencies of the gratings were set for each participant and saccade direction separately, based on the peak saccade velocities estimated during the first part of the experiment. (Due to a technical issue, for three participants the gratings were set to a default spatial frequency of 0.17 cycles/°. However, this default value was based on pilot testing, and was close to the ideal spatial frequency.) The spatial frequency was such that the maximum distance that the eyes traveled between two frames was equal to half a cycle. The logic behind this is that if the eyes are on a peak at frame `i`, they will travel half a cycle during the interframe interval, thus being on a trough at frame `i+1`. But because the polarity changes on every frame, troughs will have become peaks, and the eyes will therefore again be on a peak at frame `i+1` (see %FigFusion::b). Phrased differently, we chose the spatial and temporal frequencies of the background such that it approximated a retinotopically stabilized static grating when saccade velocity was maximal.
+%--
+figure:
+ id: FigBistable
+ source: FigBistable.svg
+ caption: |
+  During Part 2 of the experiment (see main text), the background consisted of a sinusoid grating that reversed polarity on every frame. The motion direction in this flickering display is ambiguous, and can be interpreted as leftward (red arrow) or rightward (green arrow).
+--%
+
+In the second part of the experiment, we investigated the effect of intrasaccadic perception on pupil size. The background was a 22.6° x 22.6° full-contrast sinusoid (++TODO cd/m^2^++ to ++TODO cd/m^2^++) grating that reversed in polarity on every frame (%FigBistable). During fixation, the background appeared more-or-less static, because the frame rate (150 Hz) exceeded the flicker fusion threshold (see %FigFusion::a). Furthermore, the display appeared uniformly gray, because the monitor was gamma calibrated: A pixel that was 50% luminant for two consecutive frames had the same average luminance as a pixel that was 0% luminant on one frame, and 100% luminant on the next frame. The spatial frequencies of the gratings were set for each participant and saccade direction separately, based on the peak saccade velocities estimated during the first part of the experiment. (Due to a technical issue, for three participants the gratings were set to a default spatial frequency of 0.17 cycles/°. However, this default value was based on pilot testing, and was close to the ideal spatial frequency.) The spatial frequency was such that the maximum distance that the eyes traveled between two frames was equal to half a cycle. The logic behind this is that the flickering background contains ambiguous motion: It can be perceived as moving leftward or rightward with a speed of half a cycle per frame (%FigBistable). Therefore, the peak-velocity of the eyes matched the velocity of the motion. As a result, the background approximated a retinotopically stabilized grating when saccade velocity was maximal (%FigFusion::b).
 
 %--
 figure:
@@ -42,4 +50,4 @@ In the Intrasaccadic-Percept condition, the orientation of the grating was perpe
 
 ## Part 3: Subjective report
 
-At the end of the experiment, participants provided a subjective report of how strongly they had perceived 'something odd' while making saccades. They provided separate ratings for each saccade direction on a 1 - 5 scale. Participants did not report the nature of the percept, i.e. whether they perceived a static or moving grating.
+At the end of the experiment, participants provided a subjective report of how strongly they had perceived 'something odd' while making saccades. They provided separate ratings for each saccade direction on a 1 - 5 scale. Participants did not report the nature of the percept, i.e. whether they perceived a static or a moving grating.
