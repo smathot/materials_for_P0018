@@ -41,7 +41,6 @@ Command:
 	edf2asc -e edf/*.edf
 	mv edf/*.asc data/events
 
-
 ### Perform full analysis
 
 The actual analysis is performed by the script `analyze.py`, which takes various optional parameters. The commands below correspond to the analysis as reported in the manuscript. For further details, please refer to the source code of the analysis scripts.

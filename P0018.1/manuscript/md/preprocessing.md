@@ -4,7 +4,7 @@ All signals were locked to the moment that the eyes crossed the vertical (for ho
 
 ## Trial-exclusion criteria
 
-Trials were discarded when any of the following criteria was met: Saccade latency was below 0 ms (i.e. anticipation) or above 2000 ms; Peak saccade velocity could not be determined or was unrealistically high (> 1000 °/s; usually due to data loss); The eyes deviated more than 3.3° from the fixation dot before the saccade (excluding a 200 ms around the mid-saccade point). The eyes deviated more than 3.3° from the saccade target after the saccade (again excluding a 200 ms around the mid-saccade point). In total, 4001 trials (83.3%) remained for further analysis.
+Trials were discarded when any of the following criteria was met: Saccade latency was below 0 ms (i.e. anticipation) or above 2000 ms; Peak saccade velocity could not be determined or was unrealistically high (> 1000 °/s; usually due to data loss); The eyes deviated more than 3.3° from the fixation dot before the saccade (excluding a 200 ms around the mid-saccade point). The eyes deviated more than 3.3° from the saccade target after the saccade (again excluding a 200 ms around the mid-saccade point). No participants were excluded. In total, 4001 trials (83.3%) remained for further analysis.
 
 ## Position artifacts in pupil size
 
