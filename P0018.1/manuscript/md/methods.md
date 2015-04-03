@@ -4,7 +4,7 @@ Participant data, the experimental script, and analysis scripts are available fr
 
 ## Participants
 
-Ten naive observers (age range: ++TODO++; ++TODO++ men) participated in the experiment. Participants reported normal uncorrected vision. Participants provided written informed consent prior to the experiment, and received €20 for their participation. The experiment was conducted with approval of the *Comité d'éthique de l'Université d'Aix-Marseille* (Ref.: 2014-12-03-09).
+Ten naive observers (age range: 18-21 y; 3 men) participated in the experiment. Participants reported normal uncorrected vision. Participants provided written informed consent prior to the experiment, and received €20 for their participation. The experiment was conducted with approval of the *Comité d'éthique de l'Université d'Aix-Marseille* (Ref.: 2014-12-03-09).
 
 ## Software and apparatus
 
