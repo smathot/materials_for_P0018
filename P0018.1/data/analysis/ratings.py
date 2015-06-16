@@ -61,3 +61,22 @@ def ratingPlot(dm):
 	plt.xlabel('Saccade direction')
 	plt.ylabel('Rating (0-5)')
 	Plot.save('ratingPlot', folder='ratings', show=show)
+
+def ratingStats(dm):
+
+	rm = CsvReader('data/ratings.csv').dataMatrix()
+	l = [['subject_nr', 'dir', 'rating']]
+	for i in rm.range():
+		for _dir in startPositions:
+			l.append(
+				[rm['subject_nr'][i],
+				_dir,
+				rm['rating_%s' % _dir][i]])
+	print l
+	dm = DataMatrix(l)
+	print(dm)
+	R = RBridge.R()
+	R.load(dm)
+	R.write('subject_nr <- as.factor(subject_nr)')
+	am = R.aov('rating ~ dir + Error(subject_nr / dir)')
+	print(am)

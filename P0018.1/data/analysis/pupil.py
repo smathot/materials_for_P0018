@@ -80,5 +80,44 @@ def pupilPlot(dm, suffix='', folder='pupil', model=None, standalone=True,
 
 def mainPupilPlot(dm):
 
+	"""
+	desc:
+		Provides the main results figure.
+
+	arguments:
+		dm:
+			type:	DataMatrix
+	"""
+
 	model = 'match*saccDir + (1+match+saccDir|subject_nr)'
 	pupilPlot(dm, suffix='.full', model=model)
+
+def indDiffTracePlot(dm):
+
+	"""
+	desc:
+		Plots individual results, with one pupil-size-difference trace per
+		participant.
+
+	arguments:
+		dm:
+			type:	DataMatrix
+	"""
+	Plot.new(rectPlot)
+	for subject_nr, _dm in dm.walk('subject_nr'):
+		print(subject_nr)
+		x1, y1, err1 = tk.getTraceAvg(_dm.select('match == 1', verbose=False),
+			**traceParams)
+		x2, y2, err2 = tk.getTraceAvg(_dm.select('match == 0', verbose=False),
+			**traceParams)
+		d = y1 - y2
+		plt.fill_between(x1, d, alpha=.25, color=blue[1], edgecolor=None)
+		plt.plot(x1, d, color=blue[1])
+	plt.xlim(0, traceLen)
+	plt.xticks(range(100, traceParams['traceLen'], 200),
+		range(100-lookback, traceParams['traceLen']-lookback, 200))
+	plt.ylabel('Pupil-size difference (normalized)')
+	plt.xlabel('Time relative to mid-saccade point (ms)')
+	plt.axvline(lookback, color='black', linestyle=':')
+	plt.axhline(0, color='black', linestyle=':')
+	Plot.save('indDiffTracePlot', folder='pupil', show=show)

@@ -21,11 +21,13 @@ import sys
 import math
 from exparser import TraceKit as tk
 from exparser import Plot
+from exparser.DataMatrix import DataMatrix
 from exparser.TangoPalette import *
-from exparser.Cache import cachedDataMatrix
+from exparser.Cache import cachedDataMatrix, cachedArray
 from exparser.PivotMatrix import PivotMatrix
 from exparser.EyelinkAscFolderReader import EyelinkAscFolderReader
 from exparser.CsvReader import CsvReader
+from exparser import RBridge
 from yamldoc import validate
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -36,6 +38,7 @@ import statsmodels.formula.api as sm
 import warnings
 from matplotlib import colors
 import matplotlib.cm as cmx
+from scipy.stats import linregress
 
 show = '--show' in sys.argv
 smoothParams = {'windowLen' : 11}
