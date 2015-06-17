@@ -18,7 +18,7 @@ correspondence:
 
 %-- include: "md/abstract.md" --%
 
-Keywords: pupillometry, eye movements, saccadic suppression
+Keywords: pupillometry, eye movements, saccadic suppression, ++intrasaccadic perception++
 
 ~
 
@@ -41,15 +41,5 @@ Keywords: pupillometry, eye movements, saccadic suppression
 # Discussion
 
 %-- include: "md/discussion.md" --%
-
-~
-
-# Author contributions
-
-All authors contributed to the study design and writing of the manuscript. SM developed the experiment and analyzed the data. JBM collected the data.
-
-# Acknowledgements
-
-The research leading to these results has received funding from the People Programme (Marie Curie Actions) of the European Union's Seventh Framework Programme (FP7/2007-2013) under REA grant agreement n° 622738.
 
 ~

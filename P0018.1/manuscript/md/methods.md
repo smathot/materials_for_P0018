@@ -4,11 +4,11 @@ Participant data, the experimental script, and analysis scripts are available fr
 
 ## Participants
 
-Ten naive observers (age range: 18-21 y; 3 men) participated in the experiment. Participants reported normal uncorrected vision. Participants provided written informed consent prior to the experiment, and received €20 for their participation. The experiment was conducted with approval of the *Comité d'éthique de l'Université d'Aix-Marseille* (Ref.: 2014-12-03-09).
+Ten ++naïve++ observers (age range: 18-21 y; 3 men) participated in the experiment. Participants reported normal uncorrected vision. Participants provided written informed consent prior to the experiment, and received €20 for their participation. The experiment was conducted with approval of the *Comité d'éthique de l'Université d'Aix-Marseille* (Ref.: 2014-12-03-09).
 
 ## Software and apparatus
 
-Eye position and pupil size were recorded monocularly with an EyeLink 1000 (SR Research, Mississauga, ON, Canada), a video-based eye tracker sampling at 1000 Hz. Stimuli were presented on a gamma-calibrated 21" ViewSonic p227f CRT monitor (1024x768, 150 Hz). Testing took take place in a dimly lit room. The experiment was implemented with OpenSesame [@MathôtSchreij2012] using the PsychoPy back-end [@Peirce2007] for display control and PyGaze [@Dalmaijer2014] for eye tracking.
+Eye position and pupil size were recorded monocularly with an EyeLink 1000 (SR Research, Mississauga, ON, Canada), a video-based eye tracker sampling at 1000 Hz. Stimuli were presented on a gamma-calibrated 21" ViewSonic p227f CRT monitor (1024x768, 150 Hz). Testing took take place in a dimly lit room. The experiment was implemented with OpenSesame [@MathôtSchreij2012] using the PsychoPy back-end [@Peirce2007] for display control++,++ and PyGaze [@Dalmaijer2014] for eye tracking.
 
 ## General stimuli and procedure
 

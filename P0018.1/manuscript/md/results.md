@@ -1,13 +1,13 @@
 ## Intrasaccadic perception induced pupillary constriction
 
-The main result is shown in %FigMainTrace, in which pupil size is plotted over time as a function of condition (Intrasaccadic Percept vs No Percept). The pupil initially dilated in both conditions, until about 200 ms after the mid-saccade point, reflecting motor preparation [@Jainta2011;@Wang2015Prep]. Next, the pupil constricted in both conditions from about 220 ms after the mid-saccade point. Such a constriction is typically observed after saccades [@Mathôt2015Prep;@Zuber1966Pupil]. Crucially, as predicted, this constriction was more pronounced in the Intrasaccadic-Percept Condition than in the No-Percept Condition. Based on an LME with pupil size as dependent measure, and Condition (reference: No Percept), Saccade Direction (reference: Horizontal), and their interaction as fixed effects, the effect of condition was reliable from 306 ms after the mid-saccade point until the end of the analysis period.
+The main result is shown in ++%FigMainTrace::a++, in which pupil size is plotted over time as a function of condition (Intrasaccadic Percept vs No Percept). The pupil initially dilated in both conditions, until about 200 ms after the mid-saccade point, reflecting motor preparation [@Jainta2011;@Wang2015Prep]. Next, the pupil constricted in both conditions from about 220 ms after the mid-saccade point. Such a constriction is typically observed after saccades [@Mathôt2015Prep;@Zuber1966Pupil]. Crucially, as predicted, this constriction was more pronounced in the Intrasaccadic-Percept Condition than in the No-Percept Condition. Based on an LME with pupil size as dependent measure, and Condition (reference: No Percept), Saccade Direction (reference: Horizontal), and their interaction as fixed effects, the effect of condition was reliable from 306 ms after the mid-saccade point until the end of the analysis period. ++As can be seen in the indivual-participant data (%FigMainTrace::b), this effect was highly consistent across participants.++
 
 %--
 figure:
  id: FigMainTrace
  source: FigMainTrace.svg
  caption: |
-  Mean pupil normalized pupil size over time, locked to the mid-saccade point. There was a more pronounced constriction in the Intrasaccadic Percept Condition than in the No-Percept Condition. Error bands indicate the standard error. Gray shading indicates a reliable effect of Condition..
+  a) Mean normalized pupil size over time, locked to the mid-saccade point. There was a more pronounced constriction in the Intrasaccadic Percept Condition than in the No-Percept Condition. Error bands indicate the standard error. Gray shading indicates a reliable effect of Condition. b) The pupil-size difference between the Intrasaccadic Percept and No-Percept conditions for each individual participant.
 --%
 
 ## Differences between saccade directions
@@ -47,7 +47,8 @@ figure:
 
 ## Subjective ratings
 
-%FigRatings shows the participants' subjective ratings of how strongly they had perceived 'something odd' during saccades, separately for each saccade direction. These ratings suggest that all participants experienced an intrasaccadic percept, despite the fact that all participants were naive and intrasaccadic perception was not mentioned until the end of the experiment. There is a tendency for the intrasaccadic percept to be rated more salient for horizontal than vertical saccades, but this tendency is weak and unreliable.
+%FigRatings shows the participants' subjective ratings of how strongly they had perceived 'something odd' during saccades, separately for each saccade direction. These ratings suggest that all participants experienced an intrasaccadic percept, despite the fact that all participants were ++naïve++ and intrasaccadic perception was not mentioned until the end of the experiment. ++There is a tendency for the intrasaccadic percept to be rated more salient for horizontal than vertical saccades, but this tendency is weak and unreliable (*F*(3, 27) = 0.918, p = .446; based on a Repeated Measures Analysis of Variance with saccade direction as independent variable and rating as dependent measure).++
+
 %--
 figure:
  id: FigRatings
